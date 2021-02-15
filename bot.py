@@ -8,14 +8,14 @@ def main():
 
     @bot.command()
     async def sweep(ctx):
-        admin = discord.utils.find(lambda r: r.name == 'admin', ctx.guild.roles)
+        admin = discord.utils.find(lambda r: r.name == 'Mods', ctx.guild.roles)
         print(ctx.author.roles)
         if admin not in ctx.author.roles:
             await ctx.send(f"I'm sorry ~~Dave~~ {ctx.author.name}, you're not allowed to do that.")
         else:
             try:
                 print("Reading messages in channel")
-                messages_to_del = await ctx.channel.history().flatten()
+                messages_to_del = await ctx.channel.history(limit=1000).flatten()
                 print(f"Found {len(messages_to_del)} messages to delete")
             except discord.Forbidden:
                 print("I don't have permission to read history in this channel")
@@ -27,8 +27,10 @@ def main():
             try:
                 sweepy = discord.File("sweepy.jpg")
                 await ctx.send("Sweeping channel", file=sweepy)
+                count = 0
                 for message in messages_to_del:
-                    print(f"Deleting {message.id}")
+                    print(f"Deleting {message.id} - {count:03}")
+                    count += 1
                     await message.delete()
             except discord.Forbidden:
                 print("I don't have permission to delete these messages")
